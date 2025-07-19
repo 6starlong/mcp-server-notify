@@ -1,0 +1,16 @@
+# 编译输出
+/dist
+
+# 依赖目录
+/node_modules
+
+# 日志
+*.log
+
+# 编辑器和系统文件
+.vscode
+.idea
+.DS_Store
+
+# 环境文件
+.env*

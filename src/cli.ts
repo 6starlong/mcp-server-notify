@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+import { sendNotification } from './notify'
+
+// 解析命令行参数
+const args = process.argv.slice(2)
+
+// 显示帮助信息
+if (args.includes('--help') || args.includes('-h') || args.length === 0) {
+  console.log(`
+系统通知工具
+
+用法:
+  npx mcp-notify-server <标题> <消息> [选项]
+  
+选项:
+  --help, -h          显示帮助信息
+  --app, -a <应用名>  指定要激活的应用名称
+  --sound, -s <路径>  指定自定义声音文件路径 (.wav 格式)
+  --mute, -m          静音模式，不播放声音
+  --icon, -i <路径>   指定自定义图标路径
+  --timeout, -t <秒>  设置通知超时时间（秒）
+  --verbose, -v       显示详细日志
+  
+示例:
+  npx mcp-notify-server "Title" "Message content"
+  npx mcp-notify-server "Title" "Message content" --app code
+  npx mcp-notify-server "Title" "Message content" --sound C:\\path\\to\\sound.wav
+  `)
+  process.exit(0)
+}
+
+// 解析参数
+let title = args[0]
+let message = args[1] || ''
+let appName: string | undefined = undefined
+let soundPath: string | boolean = true // 默认播放系统声音
+let iconPath: string | undefined = undefined
+let timeout: number | undefined = undefined
+let verbose = false
+
+// 处理选项
+for (let i = 2; i < args.length; i++) {
+  const arg = args[i]
+
+  if (arg === '--app' || arg === '-a') {
+    appName = args[i + 1]
+    i++ // 跳过下一个参数
+  } else if (arg === '--sound' || arg === '-s') {
+    soundPath = args[i + 1]
+    i++ // 跳过下一个参数
+  } else if (arg === '--mute' || arg === '-m') {
+    soundPath = false
+  } else if (arg === '--icon' || arg === '-i') {
+    iconPath = args[i + 1]
+    i++ // 跳过下一个参数
+  } else if (arg === '--timeout' || arg === '-t') {
+    timeout = parseInt(args[i + 1]) * 1000 // 转换为毫秒
+    i++ // 跳过下一个参数
+  } else if (arg === '--verbose' || arg === '-v') {
+    verbose = true
+  }
+}
+
+// 发送通知
+sendNotification(title, message, {
+  appName,
+  sound: soundPath,
+  icon: iconPath,
+  timeout,
+  verbose
+}).catch(err => {
+  console.error('发送通知失败:', err)
+  process.exit(1)
+})
