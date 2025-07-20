@@ -4,13 +4,18 @@
   "description": "",
   "main": "dist/index.js",
   "bin": {
-    "mcp-notify-server": "dist/cli.js"
+    "notify-cli": "dist/cli.js",
+    "notify-server": "dist/mcp-server.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "prepare": "pnpm run build"
+    "dev:mcp": "tsx src/mcp-server.ts",
+    "dev:cli": "tsx src/cli.ts",
+    "test": "pnpm run build && tsx test/notify.test.ts",
+    "test:mcp": "pnpm run build && tsx test/mcp.test.ts",
+    "test:cli": "pnpm run build && tsx test/cli.test.ts",
+    "start": "node dist/index.js"
   },
   "keywords": [
     "notification",

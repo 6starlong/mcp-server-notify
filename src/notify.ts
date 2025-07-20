@@ -102,6 +102,7 @@ export async function sendNotification(
 
   return new Promise(async (resolve, reject) => {
     const notifyOptions = {
+      appName: '',
       title,
       message,
       icon: iconPath,

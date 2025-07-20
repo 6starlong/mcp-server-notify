@@ -26,11 +26,7 @@ if (require.main === module) {
       // 默认测试：智能检测调用者应用
       await sendNotification(
         '通知标题',
-        '通知消息内容',
-        // { icon: 'https://mcp.so/logo.png' }
-        // { sound: false }
-        // { sound: 'C:\\Windows\\Media\\tada.wav' }
-        // { sound: 'https://www.soundjay.com/buttons/sounds/button-1.wav' }
+        '通知消息内容'
       )
       console.log('已发送通知')
     }

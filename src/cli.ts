@@ -10,10 +10,11 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
 系统通知工具
 
 用法:
-  npx mcp-notify-server <标题> <消息> [选项]
+  notify-cli <标题> <消息> [选项]
+  npx notify-cli <标题> <消息> [选项]
   
 选项:
-  --help, -h         显示帮助信息
+  --help, -h          显示帮助信息
   --app, -a <应用名>  指定要激活的应用名称 (最小化运行中的应用名称)
   --icon, -i <路径>   指定自定义图标路径
   --sound, -s <路径>  指定自定义声音文件路径, false 表示静音
@@ -21,9 +22,11 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   --verbose, -v       显示详细日志
   
 示例:
-  npx mcp-notify-server "Title" "Message content"
-  npx mcp-notify-server "Title" "Message content" --app code
-  npx mcp-notify-server "Title" "Message content" --sound C:\\path\\to\\sound.wav
+  notify-cli "任务完成" "代码编译成功"
+  notify-cli "提醒" "会议开始" --app Code
+  notify-cli "下载完成" "文件已保存" --sound true
+  notify "会议提醒" "5分钟后开会" --app Teams
+  notify "构建完成" "项目构建成功" --sound C:\\Windows\\Media\\tada.wav
   `)
   process.exit(0)
 }

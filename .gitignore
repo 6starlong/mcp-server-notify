@@ -9,6 +9,8 @@
 
 # 编辑器和系统文件
 .vscode
+.cursor
+.kiro
 .idea
 .DS_Store
 
