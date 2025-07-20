@@ -1,6 +1,6 @@
 # mcp-notify-server
 
-一个简单轻量的用于 Agent 任务完成后发送系统桌面原生通知的 Model Context Protocol (MCP) 服务。
+一个轻量级的桌面通知工具，支持命令行直接调用和 MCP 协议集成，让 AI 助手能够智能发送系统通知。
 
 ## 特性
 
@@ -27,14 +27,18 @@ pnpm add -g mcp-notify-server
 # 基本通知
 notify-cli "标题" "消息内容"
 
-# 带应用激活
+# 流程通知
 notify-cli "任务完成" "代码编译成功" --app Code
 
-# 自定义图标和声音
-notify-cli "提醒" "会议开始" --icon ./icon.png --sound ./alert.wav
+# 自动化任务通知
+notify-cli "构建完成" "项目构建成功" --sound false
+notify-cli "测试通过" "所有单元测试已通过" --sound C:\\Windows\\Media\\tada.wav
+
+# 集成到脚本中
+npm run build && notify-cli "构建成功" "可以开始部署了"
 ```
 
-### 2. MCP服务器模式
+### 2. MCP服务
 
 #### 在Kiro中配置
 
@@ -57,9 +61,11 @@ notify-cli "提醒" "会议开始" --icon ./icon.png --sound ./alert.wav
 
 配置完成后，你可以直接对AI助手说：
 
-- "请发送一个通知，标题是'任务完成'，内容是'代码编译成功'"
-- "发送通知提醒我开会，并激活微信应用"
+- "10分钟后提醒我"
 - "任务完成后通知我，标题用'构建完成'"
+- "帮我设置一个番茄钟，25分钟后通知我休息"
+
+您也可以将提示作为规则或者记忆添加到对应的配置中，这样就不必每次手动输入了。
 
 ### 3. 编程接口
 
@@ -81,20 +87,14 @@ await sendNotification('标题', '消息', {
 # 构建项目
 pnpm run build
 
-# 快速测试
+# 测试
 pnpm test
-
-# 完整测试
-pnpm test:full
 
 # 开发模式运行MCP服务器
 pnpm run dev:mcp
 
 # 开发模式运行CLI
 pnpm run dev:cli
-
-# 启动MCP服务器
-pnpm run start:mcp
 ```
 
 

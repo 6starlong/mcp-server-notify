@@ -11,22 +11,20 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
 
 用法:
   notify-cli <标题> <消息> [选项]
-  npx notify-cli <标题> <消息> [选项]
   
 选项:
   --help, -h          显示帮助信息
-  --app, -a <应用名>  指定要激活的应用名称 (最小化运行中的应用名称)
-  --icon, -i <路径>   指定自定义图标路径
-  --sound, -s <路径>  指定自定义声音文件路径, false 表示静音
-  --timeout, -t <秒>  设置通知超时时间（秒）
+  --app, -a <应用名>  指定要激活的应用名称
+  --icon, -i <路径>   指定自定义图标路径或URL
+  --sound, -s <路径>  指定声音文件路径，或 false 表示静音
+  --timeout, -t <秒>  设置通知显示时间（秒，默认10秒）
   --verbose, -v       显示详细日志
   
 示例:
-  notify-cli "任务完成" "代码编译成功"
-  notify-cli "提醒" "会议开始" --app Code
-  notify-cli "下载完成" "文件已保存" --sound true
-  notify "会议提醒" "5分钟后开会" --app Teams
-  notify "构建完成" "项目构建成功" --sound C:\\Windows\\Media\\tada.wav
+  notify-cli "标题" "消息内容"
+  notify-cli "任务完成" "代码编译成功" --app Code
+  notify-cli "构建完成" "项目构建成功" --sound false
+  notify-cli "测试通过" "所有单元测试已通过" --sound C:\\Windows\\Media\\tada.wav
   `)
   process.exit(0)
 }
