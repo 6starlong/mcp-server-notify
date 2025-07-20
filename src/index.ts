@@ -27,6 +27,7 @@ if (require.main === module) {
       await sendNotification(
         '通知标题',
         '通知消息内容',
+        // { icon: 'https://mcp.so/logo.png' }
         // { sound: false }
         // { sound: 'C:\\Windows\\Media\\tada.wav' }
         // { sound: 'https://www.soundjay.com/buttons/sounds/button-1.wav' }
