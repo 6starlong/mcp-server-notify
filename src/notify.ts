@@ -1,9 +1,44 @@
+import fs from 'fs'
+import os from 'os'
 import path from 'path'
+import https from 'https'
+import sound from 'sound-play'
 import notifier from 'node-notifier'
 import { activateWindow, getCallerAppInfo } from './win-utils'
 
+// 获取当前平台
+const platform = os.platform()
+
 // 存储活动通知的映射
 const activeNotifications = new Map<string, { processName: string; pid: number }>()
+
+/**
+ * 播放声音，支持网络 URL 和本地文件路径
+ * @param soundPathOrUrl 声音的 URL 或本地路径
+ */
+async function playSound(soundPathOrUrl: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // 如果是网络链接，则下载后播放
+    if (soundPathOrUrl.startsWith('http')) {
+      const tempFilePath = path.join(os.tmpdir(), `audio_${Date.now()}.wav`)
+      const file = fs.createWriteStream(tempFilePath)
+
+      https.get(soundPathOrUrl, (response) => {
+        response.pipe(file)
+        file.on('finish', () => {
+          file.close(() => resolve())
+          sound.play(tempFilePath).catch(err => console.error(`播放失败: ${err}`))
+        })
+      }).on('error', (err) => {
+        reject(new Error(`下载音频时出错: ${err.message}`))
+      })
+    } else {
+      // 如果是本地文件，直接播放
+      resolve()
+      sound.play(soundPathOrUrl).catch(err => console.error(`播放失败: ${err}`))
+    }
+  })
+}
 
 /**
  * 发送 Windows 系统通知
@@ -16,8 +51,8 @@ export async function sendNotification(
   message: string,
   options?: {
     appName?: string // 指定要激活的应用名称
-    sound?: boolean | string
     icon?: string
+    sound?: string | boolean
     timeout?: number
     verbose?: boolean // 是否显示详细日志
   }
@@ -34,12 +69,22 @@ export async function sendNotification(
     activeNotifications.set(notificationId, targetApp)
   }
 
-  return new Promise((resolve, reject) => {
+  if (options?.sound !== false) {
+    // 如果sound是字符串，则使用指定的声音文件，否则使用默认声音
+    const soundSource = typeof options?.sound === 'string'
+      ? options?.sound
+      : path.join(__dirname, '../assets/done.wav')
+
+    // 播放声音
+    await playSound(soundSource)
+  }
+
+  return new Promise(async (resolve, reject) => {
     const notifyOptions = {
       title,
       message,
       icon: options?.icon || path.join(__dirname, '../assets/icon.png'),
-      sound: options?.sound || true,
+      sound: false, // 禁用系统声音，我们自己控制声音播放
       wait: true,
       timeout: options?.timeout || 10000,
       id: notificationId

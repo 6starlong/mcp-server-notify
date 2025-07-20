@@ -13,11 +13,10 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   npx mcp-notify-server <标题> <消息> [选项]
   
 选项:
-  --help, -h          显示帮助信息
+  --help, -h         显示帮助信息
   --app, -a <应用名>  指定要激活的应用名称
-  --sound, -s <路径>  指定自定义声音文件路径 (.wav 格式)
-  --mute, -m          静音模式，不播放声音
   --icon, -i <路径>   指定自定义图标路径
+  --sound, -s <路径>  指定自定义声音文件路径 (.wav 格式), false 表示静音
   --timeout, -t <秒>  设置通知超时时间（秒）
   --verbose, -v       显示详细日志
   
@@ -33,7 +32,7 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
 let title = args[0]
 let message = args[1] || ''
 let appName: string | undefined = undefined
-let soundPath: string | boolean = true // 默认播放系统声音
+let soundPath: string | boolean = true
 let iconPath: string | undefined = undefined
 let timeout: number | undefined = undefined
 let verbose = false
