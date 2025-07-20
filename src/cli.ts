@@ -18,7 +18,6 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   --icon, -i <路径>   指定自定义图标路径或URL
   --sound, -s <路径>  指定声音文件路径，或 false 表示静音
   --timeout, -t <秒>  设置通知显示时间（秒，默认10秒）
-  --verbose, -v       显示详细日志
   
 示例:
   notify-cli "标题" "消息内容"
@@ -36,7 +35,6 @@ let appName: string | undefined = undefined
 let icon: string | undefined = undefined
 let sound: string | boolean = true
 let timeout: number | undefined = undefined
-let verbose = false
 
 // 处理选项
 for (let i = 2; i < args.length; i++) {
@@ -54,8 +52,6 @@ for (let i = 2; i < args.length; i++) {
   } else if (arg === '--timeout' || arg === '-t') {
     timeout = parseInt(args[i + 1]) * 1000
     i++ // 跳过下一个参数
-  } else if (arg === '--verbose' || arg === '-v') {
-    verbose = true
   }
 }
 
@@ -64,8 +60,7 @@ sendNotification(title, message, {
   appName,
   icon,
   sound,
-  timeout,
-  verbose
+  timeout
 }).catch(err => {
   console.error('发送通知失败:', err)
   process.exit(1)

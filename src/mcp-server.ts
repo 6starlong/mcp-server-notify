@@ -137,10 +137,6 @@ async function handleListTools(request: JsonRpcRequest) {
           timeout: {
             type: 'number',
             description: '通知超时时间，单位毫秒（可选，默认10000）'
-          },
-          verbose: {
-            type: 'boolean',
-            description: '是否显示详细日志（可选）'
           }
         },
         required: ['title', 'message']
@@ -181,7 +177,6 @@ async function handleCallTool(request: JsonRpcRequest) {
       icon: args.icon,
       sound: args.sound,
       timeout: args.timeout,
-      verbose: args.verbose || false
     })
 
     log(`通知发送成功: ${args.title}`)

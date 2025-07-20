@@ -23,8 +23,7 @@ async function testNotificationWithOptions() {
   try {
     await sendNotification('🔧 选项测试', '测试通知的各种选项', {
       sound: false,
-      timeout: 3000,
-      verbose: true
+      timeout: 3000
     })
     console.log('✅ 通知选项测试通过')
     return true
@@ -39,8 +38,7 @@ async function testNotificationWithApp() {
   
   try {
     await sendNotification('📱 应用测试', '测试点击通知激活应用', {
-      appName: 'Code',
-      verbose: true
+      appName: 'Code'
     })
     console.log('✅ 应用激活测试通过')
     return true

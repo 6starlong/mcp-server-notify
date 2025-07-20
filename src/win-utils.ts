@@ -4,10 +4,9 @@ import * as fs from 'fs'
 /**
  * 激活指定进程名的窗口（置顶并恢复）
  * @param processName 进程名
- * @param verbose 是否打印详细日志
  * @returns 是否成功激活窗口
  */
-export async function activateWindow(processName: string, verbose: boolean = false): Promise<boolean> {
+export async function activateWindow(processName: string): Promise<boolean> {
   try {
     const scriptContent = `
 Add-Type @"
@@ -69,9 +68,6 @@ if ($processes) {
       try { fs.unlinkSync(tempFile) } catch (e) { }
     }
   } catch (error) {
-    if (verbose) {
-      console.error('窗口激活失败:', error)
-    }
     return false
   }
 }
@@ -79,7 +75,7 @@ if ($processes) {
 /**
  * 获取当前进程的进程树（向上递归父进程）
  */
-export async function getProcessTree(verbose: boolean = false): Promise<Array<{ processName: string; pid: number; level: number }>> {
+export async function getProcessTree(): Promise<Array<{ processName: string; pid: number; level: number }>> {
   try {
     const currentPid = process.pid
 
@@ -131,9 +127,6 @@ Get-ProcessTree -ProcessId ${currentPid}
       try { fs.unlinkSync(tempFile) } catch (e) { }
     }
   } catch (error) {
-    if (verbose) {
-      console.error('获取进程树失败:', error)
-    }
     return []
   }
 }
@@ -141,9 +134,9 @@ Get-ProcessTree -ProcessId ${currentPid}
 /**
  * 获取调用当前 Node 进程的应用信息
  */
-export async function getCallerAppInfo(verbose: boolean = false): Promise<{ processName: string; pid: number } | null> {
+export async function getCallerAppInfo(): Promise<{ processName: string; pid: number } | null> {
   try {
-    const processTree = await getProcessTree(verbose)
+    const processTree = await getProcessTree()
     if (processTree.length === 0) return null
 
     const skip = ['node', 'powershell', 'cmd', 'conhost', 'wsl', 'bash']
@@ -160,9 +153,6 @@ export async function getCallerAppInfo(verbose: boolean = false): Promise<{ proc
 
     return null
   } catch (error) {
-    if (verbose) {
-      console.error('获取调用者应用失败:', error)
-    }
     return null
   }
 }

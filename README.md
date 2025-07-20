@@ -76,8 +76,7 @@ await sendNotification('标题', '消息', {
   appName: 'Code',           // 要激活的应用
   icon: './icon.png',        // 图标路径或URL
   sound: './sound.wav',      // 声音文件或false
-  timeout: 5000,             // 超时时间(毫秒)
-  verbose: true              // 详细日志
+  timeout: 5000             // 超时时间(毫秒)
 })
 ```
 

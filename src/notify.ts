@@ -72,15 +72,12 @@ export async function sendNotification(
     icon?: string
     sound?: string | boolean
     timeout?: number
-    verbose?: boolean // 是否显示详细日志
   }
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
   let targetApp: { processName: string; pid: number } | null = null
-  const verbose = options?.verbose || false
-
   // 获取目标应用
-  targetApp = await getCallerAppInfo(verbose)
+  targetApp = await getCallerAppInfo()
 
   // 存储通知信息
   if (targetApp) {
@@ -120,7 +117,7 @@ export async function sendNotification(
       console.log('Open App:', appName)
 
       if (appName) {
-        await activateWindow(appName, verbose)
+        await activateWindow(appName)
       }
 
       activeNotifications.delete(clickedId)
