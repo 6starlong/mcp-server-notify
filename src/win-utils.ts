@@ -3,6 +3,9 @@ import * as fs from 'fs'
 
 /**
  * 激活指定进程名的窗口（置顶并恢复）
+ * @param processName 进程名
+ * @param verbose 是否打印详细日志
+ * @returns 是否成功激活窗口
  */
 export async function activateWindow(processName: string, verbose: boolean = false): Promise<boolean> {
   try {
@@ -63,7 +66,7 @@ if ($processes) {
 
       return result.includes('SUCCESS') || result.includes('PARTIAL_SUCCESS')
     } finally {
-      try { fs.unlinkSync(tempFile) } catch (e) {}
+      try { fs.unlinkSync(tempFile) } catch (e) { }
     }
   } catch (error) {
     if (verbose) {
@@ -125,7 +128,7 @@ Get-ProcessTree -ProcessId ${currentPid}
       })
       return processes.sort((a, b) => a.level - b.level)
     } finally {
-      try { fs.unlinkSync(tempFile) } catch (e) {}
+      try { fs.unlinkSync(tempFile) } catch (e) { }
     }
   } catch (error) {
     if (verbose) {

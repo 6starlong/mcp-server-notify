@@ -115,9 +115,11 @@ export async function sendNotification(
     notifier.on('click', async (_notifierObject: any, notificationOptions: any) => {
       const clickedId = notificationOptions?.id || notificationId
       const storedApp = activeNotifications.get(clickedId)
+      const appName = options?.appName || storedApp?.processName
+      console.log('Open App:', appName)
 
-      if (storedApp) {
-        await activateWindow(storedApp.processName, verbose)
+      if (appName) {
+        await activateWindow(appName, verbose)
       }
 
       activeNotifications.delete(clickedId)

@@ -14,9 +14,9 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   
 选项:
   --help, -h         显示帮助信息
-  --app, -a <应用名>  指定要激活的应用名称
+  --app, -a <应用名>  指定要激活的应用名称 (最小化运行中的应用名称)
   --icon, -i <路径>   指定自定义图标路径
-  --sound, -s <路径>  指定自定义声音文件路径 (.wav 格式), false 表示静音
+  --sound, -s <路径>  指定自定义声音文件路径, false 表示静音
   --timeout, -t <秒>  设置通知超时时间（秒）
   --verbose, -v       显示详细日志
   
@@ -32,8 +32,8 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
 let title = args[0]
 let message = args[1] || ''
 let appName: string | undefined = undefined
-let soundPath: string | boolean = true
-let iconPath: string | undefined = undefined
+let icon: string | undefined = undefined
+let sound: string | boolean = true
 let timeout: number | undefined = undefined
 let verbose = false
 
@@ -44,16 +44,14 @@ for (let i = 2; i < args.length; i++) {
   if (arg === '--app' || arg === '-a') {
     appName = args[i + 1]
     i++ // 跳过下一个参数
-  } else if (arg === '--sound' || arg === '-s') {
-    soundPath = args[i + 1]
-    i++ // 跳过下一个参数
-  } else if (arg === '--mute' || arg === '-m') {
-    soundPath = false
   } else if (arg === '--icon' || arg === '-i') {
-    iconPath = args[i + 1]
+    icon = args[i + 1]
+    i++ // 跳过下一个参数
+  } else if (arg === '--sound' || arg === '-s') {
+    sound = args[i + 1]
     i++ // 跳过下一个参数
   } else if (arg === '--timeout' || arg === '-t') {
-    timeout = parseInt(args[i + 1]) * 1000 // 转换为毫秒
+    timeout = parseInt(args[i + 1]) * 1000
     i++ // 跳过下一个参数
   } else if (arg === '--verbose' || arg === '-v') {
     verbose = true
@@ -63,8 +61,8 @@ for (let i = 2; i < args.length; i++) {
 // 发送通知
 sendNotification(title, message, {
   appName,
-  sound: soundPath,
-  icon: iconPath,
+  icon,
+  sound,
   timeout,
   verbose
 }).catch(err => {
