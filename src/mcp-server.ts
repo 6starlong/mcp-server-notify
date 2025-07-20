@@ -79,7 +79,7 @@ function sendError(id: string | number, code: number, message: string, data?: an
 // 处理初始化请求
 async function handleInitialize(request: JsonRpcRequest) {
   log('处理初始化请求')
-  
+
   const clientInfo = request.params?.clientInfo || {}
   log(`客户端信息: ${JSON.stringify(clientInfo)}`)
 
@@ -122,17 +122,8 @@ async function handleListTools(request: JsonRpcRequest) {
             description: '图标路径或URL（可选）'
           },
           sound: {
-            oneOf: [
-              {
-                type: 'string',
-                description: '声音文件路径或URL'
-              },
-              {
-                type: 'boolean',
-                description: '是否播放声音，false表示静音'
-              }
-            ],
-            description: '声音设置（可选）'
+            type: ['string', 'boolean'],
+            description: '声音设置（可选）：声音文件路径或URL，设置为 false 表示静音'
           },
           timeout: {
             type: 'number',
@@ -156,7 +147,7 @@ async function handleListTools(request: JsonRpcRequest) {
 // 处理工具调用请求
 async function handleCallTool(request: JsonRpcRequest) {
   const { name, arguments: args } = request.params || {}
-  
+
   log(`调用工具: ${name}，参数: ${JSON.stringify(args)}`)
 
   if (name !== 'send_notification') {
@@ -209,6 +200,11 @@ async function handleMessage(message: string) {
   try {
     log(`收到消息: ${message}`)
     const request: JsonRpcRequest = JSON.parse(message)
+
+    // 确保所有响应都有正确的 id，没有则不需要响应
+    if (request.id === undefined || request.id === null) {
+      return
+    }
 
     if (!request.jsonrpc || request.jsonrpc !== '2.0') {
       sendError(request.id || 0, -32600, 'Invalid Request: jsonrpc must be "2.0"')
