@@ -73,10 +73,10 @@ npm run build && notify-cli "构建成功" "可以开始部署了"
 import { sendNotification } from 'mcp-notify-server'
 
 await sendNotification('标题', '消息', {
-  appName: 'Code',           // 要激活的应用
-  icon: './icon.png',        // 图标路径或URL
-  sound: './sound.wav',      // 声音文件或false
-  timeout: 5000             // 超时时间(毫秒)
+  appName: 'Code',          // 要激活的应用
+  icon: './icon.png',       // 图标路径或URL
+  sound: './sound.wav',     // 声音文件或false
+  timeout: 5                // 超时时间(秒)
 })
 ```
 

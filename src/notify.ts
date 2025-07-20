@@ -105,7 +105,7 @@ export async function sendNotification(
       icon: iconPath,
       sound: false, // 禁用系统声音，我们自己控制声音播放
       wait: true,
-      timeout: options?.timeout || 10000,
+      timeout: options?.timeout || 10,
       id: notificationId
     }
 

@@ -50,7 +50,7 @@ for (let i = 2; i < args.length; i++) {
     sound = args[i + 1]
     i++ // 跳过下一个参数
   } else if (arg === '--timeout' || arg === '-t') {
-    timeout = parseInt(args[i + 1]) * 1000
+    timeout = parseInt(args[i + 1])
     i++ // 跳过下一个参数
   }
 }

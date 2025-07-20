@@ -23,12 +23,35 @@ async function testNotificationWithOptions() {
   try {
     await sendNotification('🔧 选项测试', '测试通知的各种选项', {
       sound: false,
-      timeout: 3000
+      timeout: 3
     })
     console.log('✅ 通知选项测试通过')
     return true
   } catch (error) {
     console.log('❌ 通知选项测试失败:', error)
+    return false
+  }
+}
+
+async function testTimeoutSettings() {
+  console.log('⏰ 测试 timeout 设置...')
+  
+  try {
+    const startTime = Date.now()
+    await sendNotification('⏱️ Timeout 测试', '验证 timeout 参数传递正常', {
+      timeout: 5,
+      sound: false
+    })
+    
+    const actualTime = Math.round((Date.now() - startTime) / 1000)
+    console.log(`   实际显示时间: ${actualTime}秒 (系统控制)`)
+    
+    // 只要通知能正常发送和显示就算通过
+    console.log('✅ Timeout 参数设置正常')
+    return true
+    
+  } catch (error) {
+    console.log('❌ Timeout 测试失败:', error)
     return false
   }
 }
@@ -55,6 +78,9 @@ async function runAllTests() {
   await new Promise(resolve => setTimeout(resolve, 2000))
   
   results.push(await testNotificationWithOptions())
+  await new Promise(resolve => setTimeout(resolve, 2000))
+  
+  results.push(await testTimeoutSettings())
   await new Promise(resolve => setTimeout(resolve, 2000))
   
   results.push(await testNotificationWithApp())

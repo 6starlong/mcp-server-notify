@@ -136,7 +136,7 @@ async function handleListTools(request: JsonRpcRequest) {
           },
           timeout: {
             type: 'number',
-            description: '通知超时时间，单位毫秒（可选，默认10000）'
+            description: '通知超时时间，单位秒（可选，默认10）'
           }
         },
         required: ['title', 'message']
