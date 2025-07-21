@@ -101,7 +101,7 @@ async function handleListTools(request: JsonRpcRequest) {
   const tools = [
     {
       name: 'send_notification',
-      description: '发送系统桌面通知。可用于任务完成提醒、状态更新、重要事件通知等场景。支持自定义图标、声音和应用激活。',
+      description: '发送系统桌面通知。可用于任务完成提醒、状态更新、重要事件通知等场景。支持自定义图标、声音和点击通知打开指定应用。',
       inputSchema: {
         type: 'object',
         properties: {
@@ -113,10 +113,6 @@ async function handleListTools(request: JsonRpcRequest) {
             type: 'string',
             description: '通知的详细内容，可以包含具体信息和上下文'
           },
-          appName: {
-            type: 'string',
-            description: '点击通知后要激活的应用名称（可选）'
-          },
           icon: {
             type: 'string',
             description: '图标路径或URL（可选）'
@@ -125,10 +121,10 @@ async function handleListTools(request: JsonRpcRequest) {
             type: ['string', 'boolean'],
             description: '声音设置（可选）：声音文件路径或URL，设置为 false 表示静音'
           },
-          timeout: {
-            type: 'number',
-            description: '通知超时时间，单位秒（可选，默认10）'
-          }
+          open: {
+            type: 'string',
+            description: '点击通知后要激活的应用名称（可选）'
+          },
         },
         required: ['title', 'message']
       }
@@ -164,10 +160,9 @@ async function handleCallTool(request: JsonRpcRequest) {
   try {
     // 调用通知函数
     await sendNotification(args.title, args.message, {
-      appName: args.appName,
       icon: args.icon,
       sound: args.sound,
-      timeout: args.timeout,
+      open: args.open
     })
 
     log(`通知发送成功: ${args.title}`)
@@ -179,7 +174,7 @@ async function handleCallTool(request: JsonRpcRequest) {
         content: [
           {
             type: 'text',
-            text: `✅ 通知发送成功\n标题: ${args.title}\n内容: ${args.message}${args.appName ? `\n目标应用: ${args.appName}` : ''}`
+            text: `✅ 通知发送成功\n标题: ${args.title}\n内容: ${args.message}${args.open ? `\n目标应用: ${args.open}` : ''}`
           }
         ]
       }

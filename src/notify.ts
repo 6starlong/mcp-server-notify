@@ -6,8 +6,7 @@ import sound from 'sound-play'
 import notifier from 'node-notifier'
 import { activateWindow, getCallerAppInfo } from './win-utils'
 
-// 获取当前平台
-const platform = os.platform()
+// 获取当前平台（如果需要的话可以使用 os.platform()）
 
 // 存储活动通知的映射
 const activeNotifications = new Map<string, { processName: string; pid: number }>()
@@ -68,10 +67,10 @@ export async function sendNotification(
   title: string,
   message: string,
   options?: {
-    appName?: string // 指定要激活的应用名称
     icon?: string
     sound?: string | boolean
-    timeout?: number
+    open?: string // 点击通知后要激活的应用名称
+    appName?: string // 自定义通知应用
   }
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
@@ -99,34 +98,38 @@ export async function sendNotification(
 
   return new Promise(async (resolve, reject) => {
     const notifyOptions = {
-      appName: '',
+      // Required
       title,
+      // Required
       message,
+      // String. 自定义图标
       icon: iconPath,
-      sound: false, // 禁用系统声音，我们自己控制声音播放
+      // String | Boolean. 禁用系统声音，自定义声音播放
+      sound: false,
+      // Number. ID 用于关闭通知。
+      id: notificationId,
+      // String. 自定义应用 ID - 用于替换 SnoreToast
+      appID: options?.appName || 'MCP 通知',
+      // Number. 关闭之前创建的通知。
+      remove: undefined,
+      // String (path, application, app id).
+      install: undefined,
+      // 等待回调
       wait: true,
-      timeout: options?.timeout || 10,
-      id: notificationId
     }
 
     // 监听点击事件
     notifier.on('click', async (_notifierObject: any, notificationOptions: any) => {
       const clickedId = notificationOptions?.id || notificationId
       const storedApp = activeNotifications.get(clickedId)
-      const appName = options?.appName || storedApp?.processName
-      console.log('Open App:', appName)
+      const appToOpen = options?.open || storedApp?.processName
+      console.log('Open App:', appToOpen)
 
-      if (appName) {
-        await activateWindow(appName)
+      if (appToOpen) {
+        await activateWindow(appToOpen)
       }
 
       activeNotifications.delete(clickedId)
-    })
-
-    // 监听超时事件
-    notifier.on('timeout', (_notifierObject: any, notificationOptions: any) => {
-      const timeoutId = notificationOptions?.id || notificationId
-      activeNotifications.delete(timeoutId)
     })
 
     // 发送通知

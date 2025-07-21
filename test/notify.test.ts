@@ -22,8 +22,7 @@ async function testNotificationWithOptions() {
   
   try {
     await sendNotification('🔧 选项测试', '测试通知的各种选项', {
-      sound: false,
-      timeout: 3
+      sound: false
     })
     console.log('✅ 通知选项测试通过')
     return true
@@ -33,25 +32,21 @@ async function testNotificationWithOptions() {
   }
 }
 
-async function testTimeoutSettings() {
-  console.log('⏰ 测试 timeout 设置...')
+async function testAppNameSettings() {
+  console.log('📝 测试应用名称设置...')
   
   try {
-    const startTime = Date.now()
-    await sendNotification('⏱️ Timeout 测试', '验证 timeout 参数传递正常', {
-      timeout: 5,
-      sound: false
+    await sendNotification('📝 应用名称测试', '验证自定义应用名称显示正常', {
+      sound: false,
+      appName: '测试通知'
     })
     
-    const actualTime = Math.round((Date.now() - startTime) / 1000)
-    console.log(`   实际显示时间: ${actualTime}秒 (系统控制)`)
-    
     // 只要通知能正常发送和显示就算通过
-    console.log('✅ Timeout 参数设置正常')
+    console.log('✅ 应用名称设置正常')
     return true
     
   } catch (error) {
-    console.log('❌ Timeout 测试失败:', error)
+    console.log('❌ 应用名称测试失败:', error)
     return false
   }
 }
@@ -61,7 +56,7 @@ async function testNotificationWithApp() {
   
   try {
     await sendNotification('📱 应用测试', '测试点击通知激活应用', {
-      appName: 'Code'
+      open: 'Code'
     })
     console.log('✅ 应用激活测试通过')
     return true
@@ -80,7 +75,7 @@ async function runAllTests() {
   results.push(await testNotificationWithOptions())
   await new Promise(resolve => setTimeout(resolve, 2000))
   
-  results.push(await testTimeoutSettings())
+  results.push(await testAppNameSettings())
   await new Promise(resolve => setTimeout(resolve, 2000))
   
   results.push(await testNotificationWithApp())

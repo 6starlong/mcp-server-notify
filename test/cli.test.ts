@@ -43,7 +43,7 @@ async function testCLIWithOptions() {
     cliPath, 
     '🔧 CLI选项测试', 
     '测试CLI工具的各种选项',
-    '--timeout', '5'
+    '--sound', 'false'
   ], {
     stdio: ['pipe', 'pipe', 'pipe']
   })
