@@ -1,4 +1,4 @@
-# mcp-notify-server
+# mcp-server-notify
 
 一个轻量级的桌面通知工具，支持命令行直接调用和 MCP 协议集成，让 AI 助手能够智能发送系统通知。
 
@@ -14,9 +14,9 @@
 ## 安装
 
 ```bash
-npm install -g mcp-notify-server
+npm install -g mcp-server-notify
 # 或者
-pnpm add -g mcp-notify-server
+pnpm add -g mcp-server-notify
 ```
 
 ## 使用方法
@@ -70,7 +70,7 @@ npm run build && notify-cli "构建成功" "可以开始部署了"
 ### 3. 编程接口
 
 ```typescript
-import { sendNotification } from 'mcp-notify-server'
+import { sendNotification } from 'mcp-server-notify'
 
 await sendNotification('标题', '消息', {
   appName: 'Code',          // 要激活的应用

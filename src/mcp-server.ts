@@ -43,7 +43,7 @@ function getPackageVersion(): string {
 
 // 服务器配置
 const serverInfo = {
-  name: 'mcp-notify-server',
+  name: 'mcp-server-notify',
   version: getPackageVersion()
 }
 
@@ -53,7 +53,7 @@ const capabilities = {
 
 // 日志函数
 function log(message: string) {
-  console.error(`[MCP-Notify-Server] ${new Date().toISOString()}: ${message}`)
+  console.error(`[MCP-Server-Notify] ${new Date().toISOString()}: ${message}`)
 }
 
 // 发送响应

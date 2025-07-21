@@ -1,5 +1,5 @@
 {
-  "name": "mcp-notify-server",
+  "name": "mcp-server-notify",
   "version": "0.1.3",
   "description": "",
   "main": "dist/index.js",
@@ -23,7 +23,7 @@
     "agent",
     "mcp"
   ],
-  "author": "6Starlong",
+  "author": "6starlong",
   "license": "MIT",
   "dependencies": {
     "node-notifier": "^10.0.1",
