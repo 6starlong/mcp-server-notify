@@ -96,53 +96,54 @@ export async function sendNotification(
     await playSound(soundSource)
   }
 
-  return new Promise(async (resolve, reject) => {
-    const notifyOptions = {
-      // Required
-      title,
-      // Required
-      message,
-      // String. 自定义图标
-      icon: iconPath,
-      // String | Boolean. 禁用系统声音，自定义声音播放
-      sound: false,
-      // Number. ID 用于关闭通知。
-      id: notificationId,
-      // String. 自定义应用 ID - 用于替换 SnoreToast
-      appID: options?.appName || 'MCP 通知',
-      // Number. 关闭之前创建的通知。
-      remove: undefined,
-      // String (path, application, app id).
-      install: undefined,
-      // 等待回调
-      wait: true,
+  const notifyOptions = {
+    // Required
+    title,
+    // Required
+    message,
+    // String. 自定义图标
+    icon: iconPath,
+    // String | Boolean. 禁用系统声音，自定义声音播放
+    sound: false,
+    // Number. ID 用于关闭通知。
+    id: notificationId,
+    // String. 自定义应用 ID - 用于替换 SnoreToast
+    appID: options?.appName || 'MCP 通知',
+    // Number. 关闭之前创建的通知。
+    remove: undefined,
+    // String (path, application, app id).
+    install: undefined,
+    // 等待回调
+    wait: true,
+  }
+
+  // 监听点击事件
+  notifier.on('click', async (_notifierObject: any, notificationOptions: any) => {
+    const clickedId = notificationOptions?.id || notificationId
+    const storedApp = activeNotifications.get(clickedId)
+    const appToOpen = options?.open || storedApp?.processName
+    console.log('Open App:', appToOpen)
+
+    if (appToOpen) {
+      try {
+        await activateWindow(appToOpen)
+      } catch (err) {
+        console.error('激活窗口失败:', err)
+      }
     }
 
-    // 监听点击事件
-    notifier.on('click', async (_notifierObject: any, notificationOptions: any) => {
-      const clickedId = notificationOptions?.id || notificationId
-      const storedApp = activeNotifications.get(clickedId)
-      const appToOpen = options?.open || storedApp?.processName
-      console.log('Open App:', appToOpen)
-
-      if (appToOpen) {
-        await activateWindow(appToOpen)
-      }
-
-      activeNotifications.delete(clickedId)
-    })
-
-    // 发送通知
-    notifier.notify(notifyOptions, (err: Error | null) => {
-      if (err) {
-        console.error('通知发送失败:', err)
-        activeNotifications.delete(notificationId)
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
+    activeNotifications.delete(clickedId)
   })
+
+  // 发送通知
+  try {
+    notifier.notify(notifyOptions)
+    console.log('通知发送成功')
+  } catch (error) {
+    console.error('通知发送失败:', error)
+    activeNotifications.delete(notificationId)
+    throw error
+  }
 }
 
 /**
