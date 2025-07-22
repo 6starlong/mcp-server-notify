@@ -5,13 +5,15 @@
 ## 特性
 
 - 🔔 发送系统桌面原生通知
-- 🎵 自定义声音和图标支持（本地文件或网络URL）
 - 🤖 完整的 MCP 协议支持，可与AI助手无缝集成
+- 🎵 自定义声音和图标支持（本地文件或网络URL）
 - 📱 跨平台支持（基于 `node-notifier`）
 - 🎯 支持点击通知后激活指定应用（Windows）
 - ⚡ 轻量级，零配置启动
 
 ## 安装
+
+确保安装 [Node.js 20](https://nodejs.org/en/download) 或更高版本
 
 ```bash
 npm install -g mcp-server-notify
@@ -42,13 +44,24 @@ pnpm add -g mcp-server-notify
 
 #### 使用示例
 
-配置完成后，你可以直接对AI助手说：
+配置完成后，您可以通过以下方式触发通知：
 
-- "10分钟后提醒我"
-- "任务完成后通知我，标题用'构建完成'"
-- "帮我设置一个番茄钟，25分钟后通知我休息"
+```markdown
+- "任务完成后通知我"
+- "测试全部通过了，庆祝一下"
+- "发现安全漏洞，用警告音效和图标通知我"
+- "通知我代码审核结果，点击时激活VSCode"
+- "帮我设置一个番茄钟，25分钟后提醒我休息"
+```
 
-您也可以将提示词作为规则或者记忆添加到对应的配置中，这样就不必每次手动输入了。
+你可以通过在 `rules.md` 中创建自定义规则来避免每次手动输入这些偏好设置。例如，设置默认的通知样式、常用的声音文件路径、或特定项目的通知行为。
+
+#### 注意事项
+
+- **默认设置**：系统使用 [coding.png](https://github.com/6starlong/mcp-server-notify/blob/main/assets/coding.png) 作为默认图标，[done.wav](https://github.com/6starlong/mcp-server-notify/blob/main/assets/done.wav) 作为默认提示音
+- **资源管理**：支持本地文件路径和网络URL，网络资源可能有加载延迟，系统会自动降级处理（默认3秒）
+- **静音模式**：对于频繁通知，可以指定静音模式避免干扰
+- **应用关联**：点击通知可以激活指定的应用程序
 
 ### 2. 命令行使用
 
@@ -72,10 +85,10 @@ npm run build && notify-cli "构建成功" "可以开始部署了"
 import { sendNotification } from 'mcp-server-notify'
 
 await sendNotification('标题', '消息', {
-  icon: './icon.png',       // 图标路径或URL
-  sound: './sound.wav',     // 声音文件或false
-  open: 'Code',             // 点击通知后要激活的应用名称
-  appName: '系统通知'        // 自定义通知应用ID（显示名称）
+  icon: './icon.png',      // 图标路径或URL
+  sound: './sound.wav',    // 声音文件或false
+  open: 'Code',            // 点击通知后要激活的应用名称
+  appName: '系统通知'       // 自定义通知应用ID（显示名称）
 })
 ```
 
@@ -94,7 +107,6 @@ pnpm run dev:mcp
 # 开发模式运行CLI
 pnpm run dev:cli
 ```
-
 
 ## 许可证
 

@@ -114,12 +114,30 @@ async function handleListTools(request: JsonRpcRequest) {
             description: '通知的详细内容，可以包含具体信息和上下文'
           },
           icon: {
-            type: 'string',
-            description: '图标路径或URL（可选）'
+            anyOf: [
+              {
+                type: 'string',
+                description: '图标文件本地路径或URL'
+              },
+              {
+                type: 'boolean',
+                description: 'false 表示禁用图标，true 表示使用默认图标'
+              }
+            ],
+            description: '图标设置（可选）：string（文件路径/URL）、false（禁用图标）、不传（使用默认图标）'
           },
           sound: {
-            type: ['string', 'boolean'],
-            description: '声音设置（可选）：声音文件路径或URL，设置为 false 表示静音'
+            anyOf: [
+              {
+                type: 'string',
+                description: '声音文件本地路径或URL'
+              },
+              {
+                type: 'boolean',
+                description: 'false 表示静音，true 表示使用默认声音'
+              }
+            ],
+            description: '声音设置（可选）：string（文件路径/URL）、false（静音）、不传（使用默认声音）'
           },
           open: {
             type: 'string',

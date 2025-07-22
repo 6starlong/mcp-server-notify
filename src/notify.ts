@@ -12,49 +12,93 @@ import { activateWindow, getCallerAppInfo } from './win-utils'
 const activeNotifications = new Map<string, { processName: string; pid: number }>()
 
 /**
- * 获取图标的本地路径，自动处理网络 URL 和本地文件。
- * @param iconPathOrUrl 图标的 URL 或本地路径
- * @returns {Promise<string>} 最终的本地图标文件路径
+ * 获取图标路径，支持禁用图标或使用默认图标
+ * @param iconPath 图标路径：string（文件路径/URL）、false（禁用）、或者默认
+ * @returns {Promise<string>} 返回文件路径
  */
-async function getIconPath(iconPathOrUrl?: string): Promise<string> {
-  const defaultIcon = path.join(__dirname, '../assets/icon.png')
-  if (!iconPathOrUrl) return defaultIcon
-
-  // 处理网络 URL
-  if (iconPathOrUrl.startsWith('http')) {
-    const downloadedPath = await downloadToTemp(iconPathOrUrl)
-    return downloadedPath || defaultIcon
+async function getIconPath(iconPath?: string | boolean): Promise<string> {
+  // 禁用图标
+  if (iconPath === false) {
+    return 'none'
   }
 
-  // 处理本地文件路径
-  if (fs.existsSync(iconPathOrUrl)) {
-    return iconPathOrUrl
-  } else {
-    console.warn(`本地图标路径不存在: ${iconPathOrUrl}，将使用默认图标。`)
-    return defaultIcon
+  const defaultIcon = path.join(__dirname, '../assets/coding.png')
+
+  // 使用指定的图标路径或URL
+  if (typeof iconPath === 'string') {
+    // 处理本地文件路径
+    if (!iconPath.startsWith('http')) {
+      const finalPath = path.isAbsolute(iconPath)
+        ? iconPath
+        : path.join(__dirname, iconPath)
+
+      if (fs.existsSync(finalPath)) {
+        return finalPath
+      } else {
+        console.warn(`本地图标路径不存在，使用默认图标: ${iconPath}`)
+        return defaultIcon
+      }
+    }
+
+    // 处理网络 URL
+    const downloadedPath = await downloadToTemp(iconPath)
+    if (!downloadedPath) {
+      console.warn(`网络图标下载失败，使用默认图标: ${iconPath}`)
+      return defaultIcon
+    }
+
+    return downloadedPath
   }
+
+  // 其他情况使用默认图标
+  return defaultIcon
 }
 
 /**
- * 播放声音，自动处理网络 URL 和本地文件。
- * @param soundPathOrUrl 声音的 URL 或本地路径
+ * 播放声音，支持禁用声音或使用默认声音
+ * @param soundPath 声音路径：string（文件路径/URL）、false（禁用）、或者默认
  * @returns {Promise<void>} 播放声音的 Promise
  */
-async function playSound(soundPathOrUrl: string): Promise<void> {
-  let finalPath = soundPathOrUrl
+async function playSound(soundPath?: string | boolean): Promise<void> {
+  // 禁用声音
+  if (soundPath === false) {
+    return
+  }
 
-  if (soundPathOrUrl.startsWith('http')) {
-    const downloadedPath = await downloadToTemp(soundPathOrUrl)
-    console.log(downloadedPath)
-    if (!downloadedPath) {
-      console.error(`无法下载声音文件: ${soundPathOrUrl}`)
-      return // 下载失败则不播放
+  const defaultSound = path.join(__dirname, '../assets/done.wav')
+  let finalPath = soundPath
+
+  // 使用指定的声音路径或URL
+  if (typeof soundPath === 'string') {
+    // 处理本地文件路径
+    if (!soundPath.startsWith('http')) {
+      finalPath = path.isAbsolute(soundPath)
+        ? soundPath
+        : path.join(__dirname, soundPath)
+
+      if (!fs.existsSync(finalPath)) {
+        console.warn(`本地声音路径不存在，使用默认声音: ${soundPath}`)
+        finalPath = defaultSound
+      }
+    } else {
+      // 处理网络URL
+      console.log(`尝试下载声音文件: ${soundPath}`)
+      const downloadedPath = await downloadToTemp(soundPath)
+
+      if (!downloadedPath) {
+        console.warn(`网络声音下载失败，使用默认声音: ${soundPath}`)
+        finalPath = defaultSound
+        return
+      }
+
+      finalPath = downloadedPath
     }
-    finalPath = downloadedPath
+  } else {
+    finalPath = defaultSound
   }
 
   // 播放本地文件 (原始路径或下载后的临时路径)
-  sound.play(finalPath).catch(err => console.error(`播放声音失败: ${finalPath}，错误: ${err}`))
+  sound.play(finalPath)
 }
 
 /**
@@ -67,8 +111,8 @@ export async function sendNotification(
   title: string,
   message: string,
   options?: {
-    icon?: string
-    sound?: string | boolean
+    icon?: string | boolean // 文件路径/URL, 禁用或者默认
+    sound?: string | boolean // 文件路径/URL, 禁用或者默认
     open?: string // 点击通知后要激活的应用名称
     appName?: string // 自定义通知应用
   }
@@ -83,27 +127,20 @@ export async function sendNotification(
     activeNotifications.set(notificationId, targetApp)
   }
 
-  // 获取图标路径，如果是网络地址则先下载
-  const iconPath = await getIconPath(options?.icon as string)
+  // 获取图标路径
+  const iconPath = await getIconPath(options?.icon)
 
-  if (options?.sound !== false) {
-    // 如果sound是字符串，则使用指定的声音文件，否则使用默认声音
-    const soundSource = typeof options?.sound === 'string'
-      ? options?.sound
-      : path.join(__dirname, '../assets/done.wav')
+  // 播放声音
+  await playSound(options?.sound)
 
-    // 播放声音
-    await playSound(soundSource)
-  }
-
-  const notifyOptions = {
+  const notifyOptions: any = {
     // Required
     title,
     // Required
     message,
-    // String. 自定义图标
+    // String | Boolean. 自定义图标显示
     icon: iconPath,
-    // String | Boolean. 禁用系统声音，自定义声音播放
+    // String | Boolean. 自定义声音播放
     sound: false,
     // Number. ID 用于关闭通知。
     id: notificationId,
@@ -147,36 +184,59 @@ export async function sendNotification(
 }
 
 /**
- * 从 URL 下载文件到临时目录。
+ * 从 URL 下载文件到临时目录，带超时机制。
  * @param url 要下载的文件的 URL
+ * @param timeoutMs 超时时间（毫秒），默认3秒
  * @returns {Promise<string | null>} 成功则返回文件的本地路径，否则返回 null
  */
-function downloadToTemp(url: string): Promise<string | null> {
+function downloadToTemp(url: string, timeoutMs: number = 3000): Promise<string | null> {
   return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      console.warn(`下载超时: ${url}`)
+      resolve(null)
+    }, timeoutMs)
+
     try {
       const fileName = path.basename(new URL(url).pathname) || 'download'
       const tempFilePath = path.join(os.tmpdir(), `notify_${Date.now()}_${fileName}`)
 
       const file = fs.createWriteStream(tempFilePath)
 
-      https.get(url, (response) => {
+      const request = https.get(url, (response) => {
         if (response.statusCode !== 200) {
           console.error(`下载文件失败: ${url}，状态码: ${response.statusCode}`)
+          clearTimeout(timeout)
           resolve(null)
           return
         }
         response.pipe(file)
-        file.on('finish', () => file.close(() => resolve(tempFilePath)))
+        file.on('finish', () => {
+          file.close(() => {
+            clearTimeout(timeout)
+            resolve(tempFilePath)
+          })
+        })
         file.on('error', (err) => {
           console.error(`写入临时文件时出错: ${err.message}`)
+          clearTimeout(timeout)
           fs.unlink(tempFilePath, () => resolve(null)) // 清理失败的文件
         })
       }).on('error', (err) => {
         console.error(`下载文件时发生网络错误: ${err.message}`)
+        clearTimeout(timeout)
+        resolve(null)
+      })
+
+      // 设置请求超时
+      request.setTimeout(timeoutMs, () => {
+        request.destroy()
+        console.warn(`请求超时: ${url}`)
+        clearTimeout(timeout)
         resolve(null)
       })
     } catch (error) {
       console.error(`提供的 URL 无效: ${url}，错误: ${error}`)
+      clearTimeout(timeout)
       resolve(null)
     }
   })

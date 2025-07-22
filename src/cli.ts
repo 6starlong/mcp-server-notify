@@ -14,9 +14,9 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   
 选项:
   --help, -h          显示帮助信息
-  --icon, -i <路径>   指定自定义图标路径或URL
-  --sound, -s <路径>  指定声音文件路径，或 false 表示静音
-  --open, -o <应用名> 指定点击通知后要打开的应用名称
+  --icon, -i <路径>   自定义图标文件路径或URL, false 禁用或者默认
+  --sound, -s <路径>  自定义声音文件路径或URL, false 禁用或者默认
+  --open, -o <应用名> 指定点击通知后要打开的应用名称, 默认当前应用
   --name, -n <名称>   自定义通知应用ID（显示名称）
   
 示例:

@@ -11,7 +11,7 @@ const server = spawn('node', [serverPath], {
 })
 
 let testsCompleted = 0
-const totalTests = 3
+const totalTests = 5
 
 server.stdout.on('data', (data) => {
   const responses = data.toString().trim().split('\n')
@@ -22,7 +22,7 @@ server.stdout.on('data', (data) => {
         if (parsed.result) {
           testsCompleted++
           console.log(`✅ 测试 ${testsCompleted}/${totalTests} 通过`)
-          
+
           if (testsCompleted === totalTests) {
             console.log('\n🎉 MCP服务器测试完成！')
             server.kill()
@@ -86,6 +86,44 @@ function runTests() {
       }
     }) + '\n')
   }, 2500)
+
+  // 测试4: 测试禁用图标和声音
+  setTimeout(() => {
+    console.log('🚫 测试禁用图标和声音...')
+    server.stdin.write(JSON.stringify({
+      jsonrpc: '2.0',
+      id: 4,
+      method: 'tools/call',
+      params: {
+        name: 'send_notification',
+        arguments: {
+          title: '🚫 禁用测试',
+          message: '禁用图标和声音的通知',
+          icon: false,
+          sound: false
+        }
+      }
+    }) + '\n')
+  }, 3500)
+
+  // 测试5: 测试本地声音文件和网络图标
+  setTimeout(() => {
+    console.log('🔊 测试自定义图标声音...')
+    server.stdin.write(JSON.stringify({
+      jsonrpc: '2.0',
+      id: 5,
+      method: 'tools/call',
+      params: {
+        name: 'send_notification',
+        arguments: {
+          title: '🔊 本地声音测试',
+          message: '使用本地声音文件的通知',
+          icon: 'https://avatars.githubusercontent.com/u/45755401',
+          sound: 'C:\\Windows\\Media\\tada.wav'
+        }
+      }
+    }) + '\n')
+  }, 4500)
 }
 
 // 超时保护
@@ -94,4 +132,4 @@ setTimeout(() => {
     console.log('⏰ 测试超时')
     server.kill()
   }
-}, 8000)
+}, 10000)
