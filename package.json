@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "node-notifier": "^10.0.1",
+    "open": "^10.2.0",
     "sound-play": "^1.1.0"
   },
   "devDependencies": {

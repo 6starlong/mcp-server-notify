@@ -58,7 +58,7 @@ pnpm add -g mcp-server-notify
 
 #### 注意事项
 
-- **默认设置**：系统使用 [coding.png](https://github.com/6starlong/mcp-server-notify/blob/main/assets/coding.png) 作为默认图标，[done.wav](https://github.com/6starlong/mcp-server-notify/blob/main/assets/done.wav) 作为默认提示音
+- **默认设置**：系统使用 [coding.png](./assets/coding.png) 作为默认图标，[done.wav](./assets/done.wav) 作为默认提示音
 - **资源管理**：支持本地文件路径和网络URL，网络资源可能有加载延迟，系统会自动降级处理（默认3秒）
 - **静音模式**：对于频繁通知，可以指定静音模式避免干扰
 - **应用关联**：点击通知可以激活指定的应用程序

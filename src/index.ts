@@ -1,13 +1,7 @@
 import { sendNotification } from './notify'
-import { activateWindow, getCallerAppInfo, getProcessTree } from './win-utils'
 
 // 导出主要函数
-export {
-  sendNotification,
-  activateWindow,
-  getCallerAppInfo,
-  getProcessTree
-}
+export { sendNotification }
 
 // 如果直接运行此文件，执行测试
 if (require.main === module) {

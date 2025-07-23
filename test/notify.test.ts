@@ -63,18 +63,17 @@ async function testLocalSound() {
   }
 }
 
-async function testOpenApp() {
-  console.log('📱 测试打开应用...')
+async function testAppActivation() {
+  console.log('🔄 测试应用激活..')
 
   try {
-    await sendNotification('📱 应用激活测试', '点击此通知将激活 VS Code', {
-      open: 'Code',
+    await sendNotification('🔄 应用激活测测试', '点击此通知将回到之前的活动应用', {
       sound: false
     })
-    console.log('✅ 打开应用测试通过（请点击通知验证应用激活）')
+    console.log('✅ 应用激活测试通过（请点击通知验证应用切换）')
     return true
   } catch (error) {
-    console.log('❌ 打开应用测试失败:', error)
+    console.log('❌ 应用激活测试失败:', error)
     return false
   }
 }
@@ -97,7 +96,7 @@ async function runAllTests() {
   results.push(await testLocalSound())
   await new Promise(resolve => setTimeout(resolve, delay))
 
-  results.push(await testOpenApp())
+  results.push(await testAppActivation())
 
   const passed = results.filter(r => r).length
   const total = results.length

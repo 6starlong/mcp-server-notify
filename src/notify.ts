@@ -4,9 +4,7 @@ import path from 'path'
 import https from 'https'
 import sound from 'sound-play'
 import notifier from 'node-notifier'
-import { activateWindow, getCallerAppInfo } from './win-utils'
-
-// 获取当前平台（如果需要的话可以使用 os.platform()）
+import { windowManager, getCallerAppInfo } from './window-manager'
 
 // 存储活动通知的映射
 const activeNotifications = new Map<string, { processName: string; pid: number }>()
@@ -119,7 +117,7 @@ export async function sendNotification(
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
   let targetApp: { processName: string; pid: number } | null = null
-  // 获取目标应用
+  // 获取调用通知的应用（通过进程树查找）
   targetApp = await getCallerAppInfo()
 
   // 存储通知信息
@@ -145,7 +143,7 @@ export async function sendNotification(
     // Number. ID 用于关闭通知。
     id: notificationId,
     // String. 自定义应用 ID - 用于替换 SnoreToast
-    appID: options?.appName || 'MCP 通知',
+    appID: undefined, // options?.appName || 'MCP 通知',
     // Number. 关闭之前创建的通知。
     remove: undefined,
     // String (path, application, app id).
@@ -154,23 +152,33 @@ export async function sendNotification(
     wait: true,
   }
 
-  // 监听点击事件
-  notifier.on('click', async (_notifierObject: any, notificationOptions: any) => {
+  // 创建一次性点击事件处理器
+  const clickHandler = async (_notifierObject: any, notificationOptions: any) => {
     const clickedId = notificationOptions?.id || notificationId
+
+    // 只处理当前通知的点击事件
+    if (clickedId !== notificationId) {
+      return
+    }
+
     const storedApp = activeNotifications.get(clickedId)
     const appToOpen = options?.open || storedApp?.processName
-    console.log('Open App:', appToOpen)
 
     if (appToOpen) {
       try {
-        await activateWindow(appToOpen)
+        await windowManager(appToOpen)
       } catch (err) {
         console.error('激活窗口失败:', err)
       }
     }
 
+    // 清理通知记录和事件监听器
     activeNotifications.delete(clickedId)
-  })
+    notifier.removeListener('click', clickHandler)
+  }
+
+  // 监听点击事件
+  notifier.on('click', clickHandler)
 
   // 发送通知
   try {
