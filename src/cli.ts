@@ -17,7 +17,6 @@ if (args.includes('--help') || args.includes('-h') || args.length === 0) {
   --icon, -i <路径>   自定义图标文件路径或URL, false 禁用或者默认
   --sound, -s <路径>  自定义声音文件路径或URL, false 禁用或者默认
   --open, -o <应用名> 指定点击通知后要打开的应用名称, 默认当前应用
-  --name, -n <名称>   自定义通知应用ID（显示名称）
   
 示例:
   notify-cli "标题" "消息内容"
@@ -33,7 +32,6 @@ let message = args[1] || ''
 let icon: string | undefined = undefined
 let sound: string | boolean = true
 let open: string | undefined = undefined
-let appName: string | undefined = undefined
 
 // 处理选项
 for (let i = 2; i < args.length; i++) {
@@ -48,9 +46,6 @@ for (let i = 2; i < args.length; i++) {
   } else if (arg === '--open' || arg === '-o') {
     open = args[i + 1]
     i++ // 跳过下一个参数
-  } else if (arg === '--name' || arg === '-n') {
-    appName = args[i + 1]
-    i++ // 跳过下一个参数
   }
 }
 
@@ -59,7 +54,6 @@ sendNotification(title, message, {
   icon,
   sound,
   open,
-  appName
 }).catch(err => {
   console.error('发送通知失败:', err)
   process.exit(1)

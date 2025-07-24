@@ -112,7 +112,6 @@ export async function sendNotification(
     icon?: string | boolean // 文件路径/URL, 禁用或者默认
     sound?: string | boolean // 文件路径/URL, 禁用或者默认
     open?: string // 点击通知后要激活的应用名称
-    appName?: string // 自定义通知应用
   }
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
@@ -143,13 +142,15 @@ export async function sendNotification(
     // Number. ID 用于关闭通知。
     id: notificationId,
     // String. 自定义应用 ID - 用于替换 SnoreToast
-    appID: undefined, // options?.appName || 'MCP 通知',
+    appID: undefined,
     // Number. 关闭之前创建的通知。
     remove: undefined,
     // String (path, application, app id).
     install: undefined,
     // 等待回调
     wait: true,
+    // 其他选项
+    ...options
   }
 
   // 创建一次性点击事件处理器

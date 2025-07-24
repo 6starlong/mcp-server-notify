@@ -88,7 +88,6 @@ await sendNotification('标题', '消息', {
   icon: './icon.png',      // 图标路径或URL
   sound: './sound.wav',    // 声音文件或false
   open: 'Code',            // 点击通知后要激活的应用名称
-  appName: '系统通知'       // 自定义通知应用ID（显示名称）
 })
 ```
 
