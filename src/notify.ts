@@ -100,7 +100,7 @@ async function playSound(soundPath?: string | boolean): Promise<void> {
 }
 
 /**
- * 发送 Windows 系统通知
+ * 发送系统通知
  * @param title 通知标题
  * @param message 通知内容
  * @param options 配置选项
@@ -116,11 +116,11 @@ export async function sendNotification(
   }
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
-  let targetApp: { processName: string; pid: number } | null = null
-  // 获取调用通知的应用（通过进程树查找）
-  targetApp = await getCallerAppInfo()
+  
+  // 获取调用通知的应用（通过进程树查找，仅 Windows 平台有效）
+  const targetApp = await getCallerAppInfo()
 
-  // 存储通知信息
+  // 存储通知信息（仅当获取到有效信息时）
   if (targetApp) {
     activeNotifications.set(notificationId, targetApp)
   }

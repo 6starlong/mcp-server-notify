@@ -6,11 +6,17 @@
 import { execSync } from 'child_process'
 import { openApp } from 'open'
 
+// 检查当前操作系统平台是否为 Windows
+const isWindows = process.platform === 'win32'
+
 /**
  * 获取调用当前 Node 进程的应用信息（通过进程树查找）
  * @returns {Promise<{ processName: string; pid: number } | null>} 调用应用信息
  */
 export async function getCallerAppInfo(): Promise<{ processName: string; pid: number } | null> {
+  // 非 Windows 平台不支持此功能
+  if (!isWindows) return null
+
   try {
     const currentPid = process.pid
 
@@ -411,7 +417,7 @@ export async function windowManager(target: string): Promise<{
   action: string
   success: boolean
   info?: any
-}> {
+} | undefined> {
   console.log(`\n=== 窗口管理: ${target} ===`)
 
   const inputType = detectInputType(target)
@@ -427,6 +433,9 @@ export async function windowManager(target: string): Promise<{
       return { action: 'open_direct', success: false, info: { type: inputType, error } }
     }
   }
+
+  // 非 Windows 平台不支持以下功能
+  if (!isWindows) return
 
   // 分支2: 应用名 → 智能处理
   const appName = target
