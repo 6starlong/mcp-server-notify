@@ -117,27 +117,27 @@ async function handleListTools(request: JsonRpcRequest) {
             anyOf: [
               {
                 type: 'string',
-                description: '图标文件本地路径或URL'
+                description: '图标本地文件路径或URL链接地址，png 或 gif 格式，大小不超过 100KB'
               },
               {
                 type: 'boolean',
-                description: 'false 表示禁用图标，true 表示使用默认图标'
+                description: 'false 表示禁用图标'
               }
             ],
-            description: '图标设置（可选）：string（文件路径/URL）、false（禁用图标）、不传（使用默认图标）'
+            description: '图标设置（可选）：string（文件路径/URL）、false（禁用图标）、不传表示使用默认图标'
           },
           sound: {
             anyOf: [
               {
                 type: 'string',
-                description: '声音文件本地路径或URL'
+                description: '声音本地文件路径或URL链接地址，wav 格式，5秒以内，大小不超过 100KB'
               },
               {
                 type: 'boolean',
-                description: 'false 表示静音，true 表示使用默认声音'
+                description: 'false 表示静音'
               }
             ],
-            description: '声音设置（可选）：string（文件路径/URL）、false（静音）、不传（使用默认声音）'
+            description: '声音设置（可选）：string（文件路径/URL）、false（静音）、不传表示使用默认声音'
           },
           open: {
             type: 'string',
@@ -185,6 +185,15 @@ async function handleCallTool(request: JsonRpcRequest) {
 
     log(`通知发送成功: ${args.title}`)
 
+    const responseText = [
+      `✅ 通知发送成功`,
+      `标题: ${args.title}`,
+      `内容: ${args.message}`,
+      args.icon !== undefined ? `图标: ${args.icon}` : '',
+      args.sound !== undefined ? `声音: ${args.sound}` : '',
+      args.open ? `目标应用: ${args.open}` : ''
+    ].filter(Boolean).join('\n')
+
     sendResponse({
       jsonrpc: '2.0',
       id: request.id,
@@ -192,7 +201,7 @@ async function handleCallTool(request: JsonRpcRequest) {
         content: [
           {
             type: 'text',
-            text: `✅ 通知发送成功\n标题: ${args.title}\n内容: ${args.message}${args.open ? `\n目标应用: ${args.open}` : ''}`
+            text: responseText
           }
         ]
       }

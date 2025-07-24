@@ -115,7 +115,7 @@ export async function sendNotification(
   }
 ): Promise<void> {
   const notificationId = `notification_${Date.now()}`
-  
+
   // 获取调用通知的应用（通过进程树查找，仅 Windows 平台有效）
   const targetApp = await getCallerAppInfo()
 
@@ -130,6 +130,7 @@ export async function sendNotification(
   // 播放声音
   await playSound(options?.sound)
 
+  // 通知选项
   const notifyOptions: any = {
     // Required
     title,
@@ -148,10 +149,13 @@ export async function sendNotification(
     // String (path, application, app id).
     install: undefined,
     // 等待回调
-    wait: true,
-    // 其他选项
-    ...options
+    wait: true
   }
+
+  // 发送通知
+  notifier.notify(notifyOptions, (err) => {
+    if (err) activeNotifications.delete(notificationId)
+  })
 
   // 创建一次性点击事件处理器
   const clickHandler = async (_notifierObject: any, notificationOptions: any) => {
@@ -180,16 +184,6 @@ export async function sendNotification(
 
   // 监听点击事件
   notifier.on('click', clickHandler)
-
-  // 发送通知
-  try {
-    notifier.notify(notifyOptions)
-    console.log('通知发送成功')
-  } catch (error) {
-    console.error('通知发送失败:', error)
-    activeNotifications.delete(notificationId)
-    throw error
-  }
 }
 
 /**

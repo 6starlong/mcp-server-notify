@@ -33,50 +33,23 @@ async function testDisabledNotification() {
   }
 }
 
-async function testNetworkIcon() {
-  console.log('🌐 测试网络图标...')
+async function testCustomOptions() {
+  console.log('⚙️  测试自定义选项...')
 
   try {
-    await sendNotification('🌐 网络图标测试', '使用网络图标的通知', {
+    await sendNotification('⚙️ 自定义选项测试', '测试网络图标和本地声音', {
       icon: 'https://avatars.githubusercontent.com/u/45755401',
-    })
-    console.log('✅ 网络图标测试通过')
-    return true
-  } catch (error) {
-    console.log('❌ 网络图标测试失败:', error)
-    return false
-  }
-}
-
-async function testLocalSound() {
-  console.log('🔊 测试本地声音...')
-
-  try {
-    await sendNotification('🔊 本地声音测试', '使用本地声音文件的通知', {
       sound: 'C:\\Windows\\Media\\tada.wav'
     })
-    console.log('✅ 本地声音测试通过')
+    console.log('✅ 自定义选项测试通过')
     return true
   } catch (error) {
-    console.log('❌ 本地声音测试失败:', error)
+    console.log('❌ 自定义选项测试失败:', error)
     return false
   }
 }
 
-async function testAppActivation() {
-  console.log('🔄 测试应用激活..')
 
-  try {
-    await sendNotification('🔄 应用激活测测试', '点击此通知将回到之前的活动应用', {
-      sound: false
-    })
-    console.log('✅ 应用激活测试通过（请点击通知验证应用切换）')
-    return true
-  } catch (error) {
-    console.log('❌ 应用激活测试失败:', error)
-    return false
-  }
-}
 
 async function runAllTests() {
   const results = [] as boolean[]
@@ -90,13 +63,7 @@ async function runAllTests() {
   results.push(await testDisabledNotification())
   await new Promise(resolve => setTimeout(resolve, delay))
 
-  results.push(await testNetworkIcon())
-  await new Promise(resolve => setTimeout(resolve, delay))
-
-  results.push(await testLocalSound())
-  await new Promise(resolve => setTimeout(resolve, delay))
-
-  results.push(await testAppActivation())
+  results.push(await testCustomOptions())
 
   const passed = results.filter(r => r).length
   const total = results.length

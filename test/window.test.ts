@@ -31,20 +31,24 @@ async function testWindowManager(target: string) {
   try {
     const result = await windowManager(target)
     
-    console.log(`\n结果: ${result.success ? '✅ 成功' : '❌ 失败'}`)
-    console.log(`操作: ${result.action}`)
-    
-    if (result.info) {
-      console.log('详情:')
-      Object.entries(result.info).forEach(([key, value]) => {
-        if (value !== undefined) {
-          console.log(`  ${key}: ${value}`)
-        }
-      })
-    }
-    
-    if (result.info?.suggestion) {
-      console.log(`\n💡 建议: ${result.info.suggestion}`)
+    if (result) {
+      console.log(`\n结果: ${result.success ? '✅ 成功' : '❌ 失败'}`)
+      console.log(`操作: ${result.action}`)
+      
+      if (result.info) {
+        console.log('详情:')
+        Object.entries(result.info).forEach(([key, value]) => {
+          if (value !== undefined) {
+            console.log(`  ${key}: ${value}`)
+          }
+        })
+      }
+      
+      if (result.info?.suggestion) {
+        console.log(`\n💡 建议: ${result.info.suggestion}`)
+      }
+    } else {
+      console.log('\n❌ 窗口管理器返回空结果')
     }
     
   } catch (error) {

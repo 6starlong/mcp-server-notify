@@ -1,42 +1,30 @@
 # mcp-server-notify
 
-一个轻量级的桌面通知工具，支持命令行直接调用和 MCP 协议集成，让 AI 助手能够智能发送系统通知。
+一个轻量级的桌面通知工具，支持 MCP 协议集成和命令行直接调用，让 Agent 能够智能发送系统通知。
 
 ## 特性
 
 - 🔔 发送系统桌面原生通知
-- 🤖 完整的 MCP 协议支持，轻松集成各类 AI 工具
+- 🤖 完整的 MCP 协议支持，轻松集成各类 Agent 工具
 - 🎵 可自定义声音和图标（本地文件或网络URL）
 - 📱 跨平台支持（基于 [node-notifier](https://www.npmjs.com/package/node-notifier)）
 - 🎯 支持点击通知后激活指定应用、URL或可执行文件。
 - ⚡ 极致轻量，开箱即用，无需复杂配置
 
-## 安装
-
-确保安装 [Node.js 20](https://nodejs.org/en/download) 或更高版本
-
-```bash
-npm install -g mcp-server-notify
-# 或者
-pnpm add -g mcp-server-notify
-```
-
 ## 使用方法
 
 ### 1. MCP服务
 
-#### 在Kiro中配置
+#### 使用 npm
 
-创建或编辑 `.kiro/settings/mcp.json`:
+集成到 Cursor、Claude Code 或其他支持 MCP 协议的编辑器和 Agent 工具中：
 
 ```json
 {
   "mcpServers": {
-    "mcp-notify-server": {
-      "command": "notify-server",
-      "args": [],
-      "disabled": false,
-      "autoApprove": ["send_notification"]
+    "notify": {
+      "command": "npx",
+      "args": ["-y", "@6starlong/mcp-server-notify"]
     }
   }
 }
@@ -66,23 +54,26 @@ pnpm add -g mcp-server-notify
 ### 2. 命令行使用
 
 ```bash
+# 安装
+npm install -g @6starlong/mcp-server-notify
+
 # 基本通知
-notify-cli "标题" "消息内容"
+mcp-notify -c "标题" "消息内容"
 
 # 流程通知
-notify-cli "任务完成" "代码编译成功" --open Code
+mcp-notify -c "任务完成" "代码编译成功" --open Code
 
 # 自动化任务通知
-notify-cli "测试通过" "所有单元测试已通过" --sound C:\\Windows\\Media\\tada.wav
+mcp-notify -c "测试通过" "所有单元测试已通过" --sound C:\\Windows\\Media\\tada.wav
 
 # 集成到脚本中
-npm run build && notify-cli "构建成功" "可以开始部署了"
+npm run build && mcp-notify -c "构建成功" "可以开始部署了"
 ```
 
 ### 3. 编程接口
 
 ```typescript
-import { sendNotification } from 'mcp-server-notify'
+import { sendNotification } from '@6starlong/mcp-server-notify'
 
 await sendNotification('标题', '消息', {
   icon: './icon.png',      // 图标路径或URL
@@ -100,11 +91,8 @@ pnpm run build
 # 测试
 pnpm test
 
-# 开发模式运行MCP服务器
-pnpm run dev:mcp
-
-# 开发模式运行CLI
-pnpm run dev:cli
+# 开发模式（启动MCP服务器）
+pnpm run dev
 ```
 
 ## 许可证

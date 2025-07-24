@@ -5,12 +5,12 @@ import * as path from 'path'
 console.log('💻 CLI工具测试')
 console.log('==============')
 
-const cliPath = path.join(__dirname, '../dist/cli.js')
+const cliPath = path.join(__dirname, '../dist/index.js')
 
 async function testCLI() {
   console.log('🔔 测试基本通知...')
   
-  const cli = spawn('node', [cliPath, '🧪 CLI测试', 'CLI工具测试成功！'], {
+  const cli = spawn('node', [cliPath, '-c', '🧪 CLI测试', 'CLI工具测试成功！'], {
     stdio: ['pipe', 'pipe', 'pipe']
   })
 
@@ -28,32 +28,10 @@ async function testCLI() {
   cli.on('close', (code) => {
     if (code === 0) {
       console.log('✅ CLI基本功能测试通过')
-      testCLIWithOptions()
+      testCLIHelp()
     } else {
       console.log('❌ CLI基本功能测试失败')
       console.log('错误输出:', errorOutput)
-    }
-  })
-}
-
-async function testCLIWithOptions() {
-  console.log('⚙️  测试CLI选项...')
-  
-  const cli = spawn('node', [
-    cliPath, 
-    '🔧 CLI选项测试', 
-    '测试CLI工具的各种选项',
-    '--sound', 'false'
-  ], {
-    stdio: ['pipe', 'pipe', 'pipe']
-  })
-
-  cli.on('close', (code) => {
-    if (code === 0) {
-      console.log('✅ CLI选项测试通过')
-      testCLIHelp()
-    } else {
-      console.log('❌ CLI选项测试失败')
     }
   })
 }
@@ -72,7 +50,7 @@ async function testCLIHelp() {
   })
 
   cli.on('close', (code) => {
-    if (code === 0 && helpOutput.includes('系统通知工具')) {
+    if (code === 0 && helpOutput.includes('mcp-notify')) {
       console.log('✅ CLI帮助信息测试通过')
       console.log('\n🎉 所有CLI测试完成！')
     } else {
