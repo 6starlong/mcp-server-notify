@@ -6,7 +6,7 @@
 
 - 🔔 发送系统桌面原生通知
 - 🤖 完整的 MCP 协议支持，轻松集成各类 Agent 工具
-- 🎵 可自定义声音和图标（本地文件或网络URL）
+- 🎵 可自定义声音和图标（本地文件或URL）
 - 📱 跨平台支持（基于 [node-notifier](https://www.npmjs.com/package/node-notifier)）
 - 🎯 支持点击通知后激活指定应用、URL或可执行文件。
 - ⚡ 极致轻量，开箱即用，无需复杂配置
@@ -42,7 +42,7 @@
 - "帮我设置一个番茄钟，25分钟后提醒我休息"
 ```
 
-你可以通过在 `rules.md` 中创建自定义规则来避免每次手动输入这些偏好设置。例如，设置默认的通知样式、常用的声音文件路径、或特定项目的通知行为。
+你可以通过在 `~/rules/notify.md` 中创建自定义规则来避免每次手动输入这些偏好设置。例如，设置默认的通知样式、常用的声音文件路径、或特定项目的通知行为。
 
 #### 注意事项
 
@@ -56,6 +56,9 @@
 ```bash
 # 安装
 npm install -g @6starlong/mcp-server-notify
+
+# 查看帮助
+mcp-notify -h
 
 # 基本通知
 mcp-notify -c "标题" "消息内容"
@@ -76,8 +79,8 @@ npm run build && mcp-notify -c "构建成功" "可以开始部署了"
 import { sendNotification } from '@6starlong/mcp-server-notify'
 
 await sendNotification('标题', '消息', {
-  icon: './icon.png',      // 图标路径或URL
-  sound: './sound.wav',    // 声音文件或false
+  icon: './icon.png',      // 本地文件或URL，false禁用
+  sound: './sound.wav',    // 本地文件或URL，false禁用
   open: 'Code',            // 点击通知后要激活的应用名称
 })
 ```

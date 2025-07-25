@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { join } from 'path'
+import { readFileSync } from 'fs'
 import { sendNotification } from './notify'
 
 const args = process.argv.slice(2)
@@ -7,6 +8,22 @@ let command = args[0]
 
 // 处理CLI参数
 const isCliMode = command === '-c' || command === '--cli'
+
+// 获取版本信息
+function getVersion(): string {
+  try {
+    const packageJsonPath = join(__dirname, '../package.json')
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+    return packageJson.version || '未知版本'
+  } catch (error) {
+    return '未知版本'
+  }
+}
+
+// 显示版本信息
+function showVersion() {
+  console.log(getVersion())
+}
 
 // 显示帮助信息
 function showHelp() {
@@ -18,6 +35,7 @@ function showHelp() {
 
 选项:
   -h, --help           显示帮助信息
+  -v, --version        显示版本信息
   -c, --cli            CLI模式
   -i, --icon <路径>    自定义图标文件路径或URL
   -s, --sound <路径>   自定义声音文件路径或URL
@@ -88,8 +106,18 @@ if (args.includes('--help') || args.includes('-h')) {
   process.exit(0)
 }
 
+if (args.includes('--version') || args.includes('-v')) {
+  showVersion()
+  process.exit(0)
+}
+
 if (isCliMode) {
   // CLI模式，跳过-c或--cli参数
+  if (args.length < 3) {
+    console.log('提示: 使用 CLI 模式时需要同时提供标题和消息参数')
+    showHelp()
+    process.exit(0)
+  }
   runCli(args.slice(1))
 } else {
   // 默认启动MCP服务器

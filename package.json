@@ -22,10 +22,10 @@
   },
   "keywords": [
     "notification",
+    "notify",
     "mcp",
-    "mcp-server",
-    "agent",
-    "cli"
+    "server",
+    "agent"
   ],
   "author": "6starlong",
   "license": "MIT",
