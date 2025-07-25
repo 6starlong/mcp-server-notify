@@ -1,6 +1,6 @@
 {
   "name": "@6starlong/mcp-server-notify",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "轻量级桌面通知工具，支持MCP协议集成，让 Agent 能够智能发送系统通知",
   "main": "dist/index.js",
   "bin": {
