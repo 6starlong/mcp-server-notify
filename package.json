@@ -15,9 +15,9 @@
     "url": "https://github.com/6starlong/mcp-server-notify.git"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsx src/index.ts",
-    "test": "tsc && tsx test/notify.test.ts",
+    "build": "pnpm tsc",
+    "dev": "pnpx tsx src/index.ts",
+    "test": "pnpm tsc && pnpx tsx test/notify.test.ts",
     "start": "node dist/index.js"
   },
   "keywords": [
